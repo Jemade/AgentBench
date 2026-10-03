@@ -1,0 +1,98 @@
+name: Verify AgentBench
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        database: [sqlite, postgres]
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: agentbench_test
+          POSTGRES_USER: bench
+          POSTGRES_PASSWORD: ci-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U bench -d agentbench_test"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r backend/requirements-dev.txt
+      - run: ruff check app tests migrations
+        working-directory: backend
+      - name: SQLite tests
+        if: matrix.database == 'sqlite'
+        run: pytest -q
+        working-directory: backend
+      - name: PostgreSQL tests
+        if: matrix.database == 'postgres'
+        env:
+          TEST_DATABASE_URL: postgresql+psycopg://bench:ci-password@localhost:5432/agentbench_test
+        run: pytest -q
+        working-directory: backend
+      - name: Verify migration
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+psycopg://bench:ci-password@localhost:5432/agentbench_test
+        run: |
+          python -c "from app.db import metadata,engine; metadata.drop_all(engine)"
+          alembic upgrade head
+          alembic check
+  sandbox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r backend/requirements-dev.txt
+      - run: docker build -f Dockerfile.sandbox -t agentbench-sandbox:1 .
+      - run: pytest -q -k docker_runner
+        working-directory: backend
+        env: {TEST_DOCKER: 'true'}
+      - name: Build production API image
+        run: docker build -t agentbench-api:ci .
+      - name: Check Compose deployment
+        env: {POSTGRES_PASSWORD: ci-compose-secret}
+        run: |
+          docker compose up -d --build --wait
+          curl --fail http://127.0.0.1:8100/api/health
+          docker compose down
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: pip install -r backend/requirements-dev.txt
+      - run: npm ci && npm run build && npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Start product
+        working-directory: backend
+        env:
+          RUNNER: trusted-local
+          ALLOW_TRUSTED_LOCAL: 'true'
+          ADMIN_EMAIL: jayden@example.com
+          ADMIN_PASSWORD: Local-demo-pass-2026
+        run: |
+          alembic upgrade head
+          python -m app.seed
+          uvicorn app.main:app --port 8100 > /tmp/agentbench-api.log 2>&1 &
+          python -m app.worker > /tmp/agentbench-worker.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8100/api/health; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - run: npm run test:e2e
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-report
+          path: frontend/playwright-report

@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: agentbench
+      POSTGRES_USER: bench
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports: ["127.0.0.1:5433:5432"]
+    volumes: ["database:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bench -d agentbench"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  api:
+    build: .
+    ports: ["127.0.0.1:8100:8100"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://bench:${POSTGRES_PASSWORD}@db:5432/agentbench
+      RUNNER: ${RUNNER:-docker}
+      SECURE_COOKIE: ${SECURE_COOKIE:-false}
+      PROVIDER_BASE_URL: ${PROVIDER_BASE_URL:-}
+      PROVIDER_MODEL: ${PROVIDER_MODEL:-}
+      PROVIDER_API_KEY: ${PROVIDER_API_KEY:-}
+      INPUT_PRICE_PER_MILLION: ${INPUT_PRICE_PER_MILLION:-}
+      OUTPUT_PRICE_PER_MILLION: ${OUTPUT_PRICE_PER_MILLION:-}
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8100/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  database:
