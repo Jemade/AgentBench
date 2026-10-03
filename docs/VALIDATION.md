@@ -4,7 +4,7 @@ Initial implementation checked on 3 October 2026. Results reflect actual checks,
 
 | Check | Result |
 | --- | --- |
-| Backend suite on local SQLite | 23 passed; Docker integration test skipped because Docker is unavailable locally |
+| Backend suite on local SQLite | 24 passed; Docker integration test skipped because Docker is unavailable locally |
 | TypeScript checks and production frontend build | Passed |
 | Ruff checks | Passed |
 | Reference full-suite execution | 36/36 cases per repeat; source hashes recorded |

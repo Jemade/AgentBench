@@ -97,6 +97,10 @@ def finish(run, state, error=None):
 
 
 def process(run):
+    status = readiness()
+    if not status["ready"]:
+        finish(run, "error", status["detail"])
+        return
     tasks = json.loads(run["snapshot"])
     for repetition in range(1, run["repeats"] + 1):
         for task in tasks:

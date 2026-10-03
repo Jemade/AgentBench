@@ -367,3 +367,20 @@ def test_invalid_provider_responses_are_trial_errors_without_secrets(monkeypatch
     )
     with pytest.raises(AgentError, match="exceeds"):
         generate("provider", TASKS[0])
+
+
+def test_unavailable_runner_does_not_request_a_model(client, monkeypatch):
+    from app import worker
+
+    id = create(client)
+    monkeypatch.setattr(
+        worker, "readiness", lambda: dict(mode="docker", ready=False, detail="Sandbox unavailable")
+    )
+
+    def must_not_generate(*args):
+        raise AssertionError("Generation should not start without an available runner")
+
+    monkeypatch.setattr(worker, "generate", must_not_generate)
+    process(claim())
+    report = client.get("/api/runs/" + id).json()
+    assert report["state"] == "error" and report["completed_trials"] == 0

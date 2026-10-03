@@ -24,7 +24,7 @@ The queue is a database table, so accepting work does not depend on a broker. Th
 
 ## Trial lifecycle
 
-For every selected task and repetition, the worker renews the lease, skips an already-recorded trial, generates a source file, executes it, then writes a unique task/repeat result while holding the same lease token. A worker that loses ownership or receives cancellation cannot write its in-flight result. Cancellation clears ownership immediately; an in-flight provider request or container can finish its bounded operation, but its result is discarded.
+Before any generation, the worker checks runner readiness so an unavailable sandbox does not trigger a model request. For every selected task and repetition, the worker renews the lease, skips an already-recorded trial, generates a source file, executes it, then writes a unique task/repeat result while holding the same lease token. A worker that loses ownership or receives cancellation cannot write its in-flight result. Cancellation clears ownership immediately; an in-flight provider request or container can finish its bounded operation, but its result is discarded.
 
 Lease duration is 180 seconds; the provider timeout is 45 seconds and candidate deadline is 10 seconds. Lease renewal occurs between trials. Heartbeats record worker runner mode/readiness and refresh between trials or while polling. The API considers a heartbeat stale after 90 seconds.
 

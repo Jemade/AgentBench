@@ -1,5 +1,9 @@
 name: Verify AgentBench
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore: ['docs/**', 'README.md', 'LICENSE']
+  pull_request:
+    paths-ignore: ['docs/**', 'README.md', 'LICENSE']
 jobs:
   backend:
     runs-on: ubuntu-latest
