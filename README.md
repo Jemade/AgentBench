@@ -8,6 +8,18 @@ An independent evaluation workbench for single-file Python coding agents. Run a 
 
 ![AgentBench workspace](docs/screenshots/workspace.png)
 
+## Hosted demo access
+
+- Application: [https://agentbench-ycv7.onrender.com](https://agentbench-ycv7.onrender.com)
+- Health endpoint: [`/api/health`](https://agentbench-ycv7.onrender.com/api/health)
+- Sign-in email for the configured administrator: `mapasurejayden@gmail.com`
+- Administrator password: supplied privately to the account owner. It is stored in the Render service's `ADMIN_PASSWORD` environment variable and is not published in this repository.
+- Recruiter or collaborator access: request credentials privately from the project owner.
+
+The hosted interface and health endpoint were verified on 3 October 2026. The current free deployment uses temporary SQLite storage, so application data can reset on instance replacement or redeployment. Persistent PostgreSQL wiring is pending.
+
+The hosted worker evaluates the authored reference and naive baselines. Provider-generated code evaluation requires a separate Docker worker host.
+
 ## What works
 
 - Six authored Python tasks covering algorithms, money parsing, event deduplication, retry policy, nested redaction, and pagination.
