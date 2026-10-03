@@ -4,13 +4,23 @@ Initial implementation checked on 3 October 2026. Results reflect actual checks,
 
 | Check | Result |
 | --- | --- |
-| Backend suite on local SQLite | 24 passed; Docker integration test skipped because Docker is unavailable locally |
-| TypeScript checks and production frontend build | Passed |
+| Backend suite on SQLite | 24 passed locally and in GitHub Actions; Docker test excluded from this job |
+| Backend suite on PostgreSQL 17 | 24 passed in GitHub Actions; Docker test excluded from this job |
+| Docker runner integration | Passed actual external-source scoring, non-root UID, credential absence, network restriction and deadline checks |
+| Browser workflows | All 3 passed locally and in GitHub Actions |
+| TypeScript checks and production frontend build | Passed locally and in GitHub Actions |
 | Ruff checks | Passed |
+| Initial migrations and schema comparison | Passed on clean SQLite locally and PostgreSQL in GitHub Actions |
+| Production API Docker image | Built successfully in GitHub Actions |
+| Compose PostgreSQL/API deployment | Started successfully; HTTP database health check passed |
+| Screenshot capture | No browser runtime errors observed |
+| Published source | All 65 initial file blob hashes matched the tested local source |
 | Reference full-suite execution | 36/36 cases per repeat; source hashes recorded |
-| Naive full-suite execution | Actual failed edge cases recorded |
+| Naive full-suite execution | 19/36 cases passed (52.8%); actual failures recorded |
 
-Local browser checks passed for baseline execution/source inspection/exports/comparison, mobile navigation/dialogs/page width, and incompatible task-set rejection. Screenshot capture reported no browser runtime errors. A clean SQLite migration and schema comparison passed. GitHub Actions results are added after their runs complete. The configured workflow covers SQLite/PostgreSQL, migrations, Docker execution restrictions/deadline, production API image build, Compose health and browser workflows.
+[Verified final code CI run](https://github.com/Jemade/AgentBench/actions/runs/37151337799) covers code commit `29d3d860991705887e60ccbab5fc723fda81e770`. Later documentation-only changes do not trigger repeated tests.
+
+The browser checks cover baseline execution/source inspection/exports/comparison, mobile navigation/dialogs/page width, and incompatible task-set rejection. A Docker worker host remains a separate supervised process in deployment; the Compose health test verifies the API and database, while the sandbox integration test verifies candidate execution.
 
 ## Coverage
 
