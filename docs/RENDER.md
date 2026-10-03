@@ -53,3 +53,9 @@ Free Render web services sleep after inactivity. Evaluation work pauses while th
 - [Render Docker services](https://render.com/docs/docker)
 - [Render Blueprint specification](https://render.com/docs/blueprint-spec)
 - [Render free-service limits](https://render.com/docs/free)
+
+## Current hosted demo
+
+Created on 3 October 2026 in My Workspace: https://agentbench-ycv7.onrender.com. The live service uses Render's native Python runtime; its build installs backend requirements and builds the React frontend. Its start command is `cd backend && python -m app.hosted`.
+
+Both the interface and `/api/health` returned HTTP 200. PostgreSQL connection wiring is pending, so this deployment currently uses temporary SQLite storage. Stored application data can reset on instance replacement or redeployment. Administrator credentials are secret environment variables in the service settings, not repository files. Automatic deploys are disabled while database configuration is being completed.

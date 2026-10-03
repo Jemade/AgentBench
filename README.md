@@ -2,6 +2,8 @@
 
 [![Verify AgentBench](https://github.com/Jemade/AgentBench/actions/workflows/ci.yml/badge.svg)](https://github.com/Jemade/AgentBench/actions/workflows/ci.yml)
 
+[Hosted demo](https://agentbench-ycv7.onrender.com) · Account sign-in required. The current free demo uses temporary SQLite storage; data can reset when Render restarts the instance.
+
 An independent evaluation workbench for single-file Python coding agents. Run a versioned task suite, inspect the generated source and each test case, export evidence, and compare compatible evaluations.
 
 ![AgentBench workspace](docs/screenshots/workspace.png)
