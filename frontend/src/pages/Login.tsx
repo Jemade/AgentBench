@@ -39,7 +39,6 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
             results
           </div>
         </div>
-        <small>A portfolio product by Jayden Mapasure.</small>
       </section>
       <section className="login-form">
         <form onSubmit={submit}>
