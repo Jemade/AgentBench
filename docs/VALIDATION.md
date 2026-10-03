@@ -33,3 +33,9 @@ Concurrent claim testing caught a SQLite read-snapshot upgrade failure. Mutating
 - Live external-provider evaluation requires credentials not provided during implementation. The adapter contract is tested using a mock HTTP transport.
 - This is a small public suite with authored fixtures. No anti-cheating assurance, generalized model ranking or production load claim.
 - Independent security review, full accessibility audit, distributed-worker load testing and public HTTPS deployment remain separate work.
+
+## Render startup verification
+
+Checked on 3 October 2026: 29 backend tests passed locally on SQLite, including PostgreSQL URL normalization, provider port binding, child-process cleanup after component failure, and graceful platform shutdown. Ruff checks passed. All three browser workflows passed using `python -m app.hosted`; restarting the service retained the account without duplicate seeding. AgentBench's Docker-specific integration test was skipped locally because Docker was unavailable.
+
+The hosted startup was checked locally. A live Render deployment is not claimed by these results. The Blueprint requires a dedicated PostgreSQL connection and initial account credentials.

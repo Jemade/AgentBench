@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: agentbench
+    runtime: docker
+    plan: free
+    repo: https://github.com/Jemade/AgentBench
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerCommand: python -m app.hosted
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NAME
+        value: Jayden Mapasure
+      - key: RUNNER
+        value: trusted-local
+      - key: ALLOW_TRUSTED_LOCAL
+        value: "true"
+      - key: HOSTED_WORKER
+        value: "true"
+      - key: SECURE_COOKIE
+        value: "true"
+      - key: PYTHONUNBUFFERED
+        value: "1"

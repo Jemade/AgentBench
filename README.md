@@ -18,11 +18,19 @@ An independent evaluation workbench for single-file Python coding agents. Run a 
 - A hand-coded responsive React/TypeScript interface, original SVG identity, restrained forest/amber colours, and no gradients or glow effects.
 - SQLite development, PostgreSQL support, schema migrations, Docker configuration and automated backend/browser/sandbox checks.
 
-## Understand the scope
+## Evaluation scope
 
 This release evaluates **one generated Python source file per task**, not repository-wide agents with tool-use loops. The tasks are small and public. A score describes this exact suite; it is not a general intelligence ranking, a research benchmark claim, or evidence of customer adoption.
 
 Baseline results come from actually executing authored solutions. They are not simulated model scores. The model adapter is available only when you supply your own server credentials and use the Docker runner. No provider key is bundled, and screenshots use the free baseline workflow. See [measurement](docs/MEASUREMENT.md) and [validation](docs/VALIDATION.md).
+
+## Deploy to Render
+
+[Deploy to Render](https://render.com/deploy?repo=https://github.com/Jemade/AgentBench)
+
+The Blueprint starts the interface, API, and demonstration worker. Supply a dedicated PostgreSQL database URL and initial account credentials. See [Render deployment](docs/RENDER.md) for startup, persistence, service-plan limits, and verification.
+
+The hosted worker executes authored baselines. Live model evaluation requires a separate Docker worker host.
 
 ## Quick start: free baseline workflow
 
@@ -151,7 +159,7 @@ npm run test:e2e
 
 GitHub Actions checks SQLite, PostgreSQL, migrations, browser workflows, Docker sandbox behaviour, production image build and Compose health.
 
-## Review the engineering
+## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Metric definitions and limits](docs/MEASUREMENT.md)
@@ -180,4 +188,6 @@ compose.yaml           PostgreSQL and API deployment
 
 Custom task authoring/version publishing, repository-wide agent adapters, isolated VM execution, task-level statistical estimates on larger suites, additional provider protocols, team roles, retention policies and provider budget enforcement. These are future extensions rather than represented features.
 
-MIT license. Created with coding assistance; review and understand the implementation before presenting it in an interview.
+## License
+
+MIT. See [LICENSE](LICENSE).

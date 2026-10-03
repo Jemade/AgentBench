@@ -81,13 +81,11 @@ jobs:
         env:
           RUNNER: trusted-local
           ALLOW_TRUSTED_LOCAL: 'true'
+          PORT: 8100
           ADMIN_EMAIL: jayden@example.com
           ADMIN_PASSWORD: Local-demo-pass-2026
         run: |
-          alembic upgrade head
-          python -m app.seed
-          uvicorn app.main:app --port 8100 > /tmp/agentbench-api.log 2>&1 &
-          python -m app.worker > /tmp/agentbench-worker.log 2>&1 &
+          python -m app.hosted > /tmp/agentbench-hosted.log 2>&1 &
           for i in $(seq 1 30); do
             if curl -sf http://127.0.0.1:8100/api/health; then exit 0; fi
             sleep 1

@@ -1,6 +1,15 @@
 import os
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./agentbench.db")
+
+def database_url(value):
+    """Accept hosted PostgreSQL URLs with the installed psycopg driver."""
+    for prefix in ("postgres://", "postgresql://"):
+        if value.startswith(prefix):
+            return "postgresql+psycopg://" + value[len(prefix):]
+    return value
+
+
+DATABASE_URL = database_url(os.getenv("DATABASE_URL", "sqlite:///./agentbench.db"))
 RUNNER = os.getenv("RUNNER", "docker")
 SANDBOX_IMAGE = os.getenv("SANDBOX_IMAGE", "agentbench-sandbox:1")
 ALLOW_TRUSTED_LOCAL = os.getenv("ALLOW_TRUSTED_LOCAL", "false").lower() == "true"
