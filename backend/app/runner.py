@@ -14,6 +14,14 @@ HARNESS = """import copy, importlib.util, json, sys
 spec = importlib.util.spec_from_file_location("candidate", "/workspace/solution.py" if len(sys.argv)==1 else sys.argv[1])
 module = importlib.util.module_from_spec(spec)
 rows=[]
+def strict_equal(left, right):
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, list):
+        return len(left) == len(right) and all(strict_equal(a, b) for a, b in zip(left, right))
+    if isinstance(left, dict):
+        return left.keys() == right.keys() and all(strict_equal(left[k], right[k]) for k in left)
+    return left == right
 try:
     spec.loader.exec_module(module)
     cases=json.load(open("/workspace/cases.json" if len(sys.argv)==1 else sys.argv[2]))
@@ -22,8 +30,9 @@ try:
         original=copy.deepcopy(value)
         try:
             actual=module.solve(value)
-            valid=actual == expected and value == original and type(actual) is type(expected)
-            rows.append({"index":i+1,"passed":valid,"expected":expected,"actual":actual,"mutated_input":value != original})
+            unchanged=strict_equal(value, original)
+            valid=strict_equal(actual, expected) and unchanged
+            rows.append({"index":i+1,"passed":valid,"expected":expected,"actual":actual,"mutated_input":not unchanged})
         except Exception as e:
             rows.append({"index":i+1,"passed":False,"error":type(e).__name__})
 except Exception as e:

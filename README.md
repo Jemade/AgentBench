@@ -205,3 +205,7 @@ Custom task authoring/version publishing, repository-wide agent adapters, isolat
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development checks, regression tests and review expectations. Use the issue templates for reproducible bugs or concrete feature proposals.
