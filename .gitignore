@@ -14,3 +14,14 @@ frontend/playwright-report/
 frontend/test-results/
 *.tsbuildinfo
 data/
+
+# Local runtime and private configuration
+venv/
+*.py[cod]
+.mypy_cache/
+node_modules/
+.env.local
+.env.*.local
+*.sqlite
+*.sqlite3
+.DS_Store
